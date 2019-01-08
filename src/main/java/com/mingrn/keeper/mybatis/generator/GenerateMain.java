@@ -1,4 +1,4 @@
-package com.mingrn.mybatis.generator;
+package com.mingrn.keeper.mybatis.generator;
 
 public class GenerateMain {
 

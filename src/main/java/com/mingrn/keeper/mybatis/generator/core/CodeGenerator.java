@@ -1,4 +1,4 @@
-package com.mingrn.mybatis.generator.core;
+package com.mingrn.keeper.mybatis.generator.core;
 
 import com.google.common.base.CaseFormat;
 import freemarker.template.TemplateException;
@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.generator.api.MyBatisGenerator;
-import org.mybatis.generator.api.ProgressCallback;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.Context;
 import org.mybatis.generator.config.GeneratedKey;

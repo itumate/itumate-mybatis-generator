@@ -1,4 +1,4 @@
-package com.mingrn.mybatis.generator.core;
+package com.mingrn.keeper.mybatis.generator.core;
 
 /**
  * 常量类
