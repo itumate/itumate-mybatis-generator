@@ -362,7 +362,7 @@ public class CodeGenerator {
 	 * freemarker 配置
 	 */
 	private static freemarker.template.Configuration getConfiguration() throws IOException {
-		freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_23);
+		freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_28);
 		cfg.setClassLoaderForTemplateLoading(CodeGenerator.class.getClassLoader(), "template/");
 		cfg.setDefaultEncoding("UTF-8");
 		cfg.setTemplateExceptionHandler(TemplateExceptionHandler.IGNORE_HANDLER);
