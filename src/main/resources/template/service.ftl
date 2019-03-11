@@ -1,7 +1,7 @@
 package ${basePackage}.service;
 import ${basePackage}.domain.${domainNameUpperCamel};
 import ${basePackage}.dto.${domainNameUpperCamel}DTO;
-import com.mingrn.keeper.core.Service;
+import com.mingrn.itumate.core.Service;
 import java.lang.${pkDataType};
 
 /**

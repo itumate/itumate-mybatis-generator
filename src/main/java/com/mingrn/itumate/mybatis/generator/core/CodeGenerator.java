@@ -1,4 +1,4 @@
-package com.mingrn.keeper.mybatis.generator.core;
+package com.mingrn.itumate.mybatis.generator.core;
 
 import com.google.common.base.CaseFormat;
 import freemarker.template.TemplateException;

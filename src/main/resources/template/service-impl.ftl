@@ -4,7 +4,7 @@ import ${basePackage}.mapper.${domainNameUpperCamel}Mapper;
 import ${basePackage}.domain.${domainNameUpperCamel};
 import ${basePackage}.service.${domainNameUpperCamel}Service;
 import ${basePackage}.dto.${domainNameUpperCamel}DTO;
-import com.mingrn.keeper.core.AbstractService;
+import com.mingrn.itumate.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.${pkDataType};

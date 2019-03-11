@@ -1,7 +1,7 @@
-package com.mingrn.keeper.mybatis.generator.util;
+package com.mingrn.itumate.mybatis.generator.util;
 
-import com.mingrn.keeper.mybatis.generator.core.CodeGenerator;
-import com.mingrn.keeper.mybatis.generator.core.ProjectConstant;
+import com.mingrn.itumate.mybatis.generator.core.CodeGenerator;
+import com.mingrn.itumate.mybatis.generator.core.ProjectConstant;
 
 import java.io.File;
 

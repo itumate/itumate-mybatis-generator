@@ -1,4 +1,4 @@
-package com.mingrn.keeper.mybatis.generator.core;
+package com.mingrn.itumate.mybatis.generator.core;
 
 /**
  * 常量类
@@ -16,7 +16,7 @@ public class ProjectConstant {
 	/**
 	 * Mapper 基础继承接口
 	 */
-	public static String MAPPER_INTERFACE_REFERENCE = "com.mingrn.keeper.core.Mapper";
+	public static String MAPPER_INTERFACE_REFERENCE = "com.mingrn.itumate.core.Mapper";
 
 	public ProjectConstant(String packAge) {
 		this.packAge = packAge;
