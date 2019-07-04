@@ -41,7 +41,7 @@ public class ConnectJdbc {
     private static final int DEFAULT_PORT = 3306;
     private static final String DEFAULT_HOST = "localhost";
 
-    private static Connection connection = null;
+    private Connection connection = null;
     private static final String CLASS_NAME = "com.mysql.cj.jdbc.Driver";
     private static final String DEFAULT_CLASS_NAME = "com.mysql.jdbc.Driver";
 
@@ -98,7 +98,7 @@ public class ConnectJdbc {
      * 查询库
      */
     @SuppressWarnings("unchecked")
-    public static List<String> showDatabases() {
+    public List<String> showDatabases() {
 
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
@@ -114,7 +114,7 @@ public class ConnectJdbc {
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
-            closeConnection(connection);
+            closeConnection();
         }
         return databases;
     }
@@ -126,7 +126,7 @@ public class ConnectJdbc {
      * @return 数据库数据表集合
      */
     @SuppressWarnings("unchecked")
-    public static List<Table> showTables(String database) {
+    public List<Table> showTables(String database) {
 
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
@@ -180,7 +180,7 @@ public class ConnectJdbc {
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
-            closeConnection(connection);
+            closeConnection();
         }
         return tables;
     }
@@ -193,7 +193,7 @@ public class ConnectJdbc {
      * @return 数据表字段集合
      */
     @SuppressWarnings("unchecked")
-    public static List<Column> getColumns(String database, String table) {
+    public List<Column> showColumns(String database, String table) {
 
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
@@ -208,7 +208,7 @@ public class ConnectJdbc {
         try {
             // 查询数据表字段及信息
             ResultSet columnSet = connection.prepareStatement("SELECT COLUMN_NAME name, COLUMN_TYPE type, COLUMN_KEY `key`, IS_NULLABLE isNullable, COLUMN_COMMENT `comment` "
-                    + "FROM information_schema.columns WHERE TABLE_SCHEMA='" + database + "' AND TABLE_NAME = 'sys_administrative_region';").executeQuery();
+                    + "FROM information_schema.columns WHERE TABLE_SCHEMA='" + database + "' AND TABLE_NAME = '" + table + "';").executeQuery();
 
             while (columnSet.next()) {
                 String name = columnSet.getString("name");
@@ -222,7 +222,7 @@ public class ConnectJdbc {
         } catch (SQLException e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
-            closeConnection(connection);
+            closeConnection();
         }
         return columns;
     }
@@ -230,7 +230,7 @@ public class ConnectJdbc {
     /**
      * 关闭数据库连接
      */
-    public static void closeConnection(Connection connection) {
+    public void closeConnection() {
         if (connection != null) {
             try {
                 connection.close();
