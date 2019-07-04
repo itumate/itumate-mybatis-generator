@@ -33,15 +33,18 @@ import java.util.*;
  */
 public class ConnectJdbc {
 
-    private static String dbUrl;
-    private static String dbUser;
-    private static String dbPassword;
-    private static Connection connection = null;
-    private static final String DEFAULT_CLASS_NAME = "com.mysql.jdbc.Driver";
-    private static final String CLASS_NAME = "com.mysql.cj.jdbc.Driver";
+    private String ip;
+    private int port;
+    private String user;
+    private String password;
+    private boolean useSSL = false;
+    private static final int DEFAULT_PORT = 3306;
+    private static final String DEFAULT_HOST = "localhost";
 
-    private static String ip;
-    private static int port;
+    private static Connection connection = null;
+    private static final String CLASS_NAME = "com.mysql.cj.jdbc.Driver";
+    private static final String DEFAULT_CLASS_NAME = "com.mysql.jdbc.Driver";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConnectJdbc.class);
 
     static {
@@ -54,60 +57,64 @@ public class ConnectJdbc {
                 LOGGER.error("can not load jdbc driver", e);
             }
         }
+    }
 
-        ip = "localhost";
-        port = 3306;
-        dbUser = "root";
-        dbPassword = "admin123";
-        dbUrl = "jdbc:mysql://" + ip + ":" + port + "?useUnicode=true&characterEncoding=utf-8&useSSL=false";
+    public ConnectJdbc(String user, String password) {
+        this(DEFAULT_HOST, DEFAULT_PORT, user, password);
+    }
+
+    public ConnectJdbc(String ip, String user, String password) {
+        this(ip, DEFAULT_PORT, user, password);
+    }
+
+    public ConnectJdbc(String ip, int port, String user, String password) {
+        this(ip, port, user, password, false);
+    }
+
+    public ConnectJdbc(String ip, int port, String user, String password, boolean useSSL) {
+        this.ip = ip;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.useSSL = useSSL;
     }
 
     /**
-     * 获取数据库连接
-     *
-     * @return Connection
+     * 初始化数据库连接
      */
-    public static void getConnection() {
+    public Connection init() {
         try {
-            connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-        } catch (SQLException e) {
-            LOGGER.error("Get connection failure", e);
-        }
-    }
-
-    /**
-     * 关闭数据库连接
-     */
-    public static void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                LOGGER.error("close connection failure", e);
+            if (connection != null){
+                return connection;
             }
+            connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "?useUnicode=true&characterEncoding=utf-8&useSSL=" + useSSL, user, password);
+        } catch (SQLException e) {
+            LOGGER.error("Get jdbc connection failure", e);
         }
+        return connection;
     }
 
     /**
      * 查询库
      */
     @SuppressWarnings("unchecked")
-    public static List<String> getDatabases() {
-        getConnection();
+    public static List<String> showDatabases() {
 
-        List<String> databases = new ArrayList<>();
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
             return Collections.EMPTY_LIST;
         }
 
+        List<String> databases = new ArrayList<>();
         try {
             ResultSet resultSet = connection.prepareStatement("SHOW DATABASES;").executeQuery();
             while (resultSet.next()) {
-                databases.add(resultSet.getString(1));
+                databases.add(resultSet.getString("database"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
+        } finally {
+            closeConnection(connection);
         }
         return databases;
     }
@@ -118,15 +125,15 @@ public class ConnectJdbc {
      * @param database 数据库
      * @return 数据库数据表集合
      */
-    public static List<Table> getTables(String database) {
-        getConnection();
+    @SuppressWarnings("unchecked")
+    public static List<Table> showTables(String database) {
 
-        List<Table> tables = new ArrayList<>();
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
-            return tables;
+            return Collections.EMPTY_LIST;
         }
 
+        List<Table> tables = new ArrayList<>();
         try {
             // 不指定库查询所有库所有表
             // 查询数据库元数据信息
@@ -171,22 +178,33 @@ public class ConnectJdbc {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } finally {
-            closeConnection();
+            closeConnection(connection);
         }
         return tables;
     }
 
+    /**
+     * 获取表字段信息
+     *
+     * @param database 数据库
+     * @param table 数据表
+     * @return 数据表字段集合
+     */
+    @SuppressWarnings("unchecked")
     public static List<Column> getColumns(String database, String table) {
-        getConnection();
 
-        List<Column> columns = new ArrayList<>();
         if (connection == null) {
             LOGGER.error("JDBC Connection Is Null, Exit");
-            return columns;
+            return Collections.EMPTY_LIST;
         }
 
+        if (StringUtils.isBlank(database) || StringUtils.isBlank(table)){
+            throw new RuntimeException("JDBC connect Database is EMPTY or Table is EMPTY");
+        }
+
+        List<Column> columns = new ArrayList<>();
         try {
             // 查询数据表字段及信息
             ResultSet columnSet = connection.prepareStatement("SELECT COLUMN_NAME name, COLUMN_TYPE type, COLUMN_KEY `key`, IS_NULLABLE isNullable, COLUMN_COMMENT `comment` "
@@ -202,16 +220,23 @@ public class ConnectJdbc {
                 columns.add(new Column(name, type, key, isNullable, comment));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage(), e);
         } finally {
-            closeConnection();
+            closeConnection(connection);
         }
         return columns;
     }
 
-
-    public static void main(String[] args) {
-
-        getColumns("itumate_system", "sys_administrative_region");
+    /**
+     * 关闭数据库连接
+     */
+    public static void closeConnection(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                LOGGER.error("close jdbc connection failure", e);
+            }
+        }
     }
 }
