@@ -8,8 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 新版驱动url默认地址为127.0.0.1:3306,所以访问本机mysql数据库地址可以用 /// 表示;
@@ -84,7 +85,7 @@ public class ConnectJdbc {
      */
     public Connection init() {
         try {
-            if (connection != null){
+            if (connection != null) {
                 return connection;
             }
             connection = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "?useUnicode=true&characterEncoding=utf-8&useSSL=" + useSSL, user, password);
@@ -189,7 +190,7 @@ public class ConnectJdbc {
      * 获取表字段信息
      *
      * @param database 数据库
-     * @param table 数据表
+     * @param table    数据表
      * @return 数据表字段集合
      */
     @SuppressWarnings("unchecked")
@@ -200,7 +201,7 @@ public class ConnectJdbc {
             return Collections.EMPTY_LIST;
         }
 
-        if (StringUtils.isBlank(database) || StringUtils.isBlank(table)){
+        if (StringUtils.isBlank(database) || StringUtils.isBlank(table)) {
             throw new RuntimeException("JDBC connect Database is EMPTY or Table is EMPTY");
         }
 

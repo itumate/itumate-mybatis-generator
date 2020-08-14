@@ -12,7 +12,8 @@ public class Column implements Serializable {
 
     private static final Long serialVersionUID = -1L;
 
-    public Column(){}
+    public Column() {
+    }
 
     public Column(String name, String type, String key, String isNullable, String comment) {
         this.name = name;
